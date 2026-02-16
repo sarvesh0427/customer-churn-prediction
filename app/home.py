@@ -73,12 +73,12 @@ def home():
     input_df = pd.DataFrame([input_dict])
 
     # Add missing columns safely
-    for col in feature_names:
-        if col not in input_df.columns:
-            input_df[col] = None
+    # for col in feature_names:
+    #     if col not in input_df.columns:
+    #         input_df[col] = None
 
-    # Correct order
-    input_df = input_df[feature_names]
+    # # Correct order
+    # input_df = input_df[feature_names]
 
     # Fix numeric types
     num_cols = ["tenure", "MonthlyCharges", "TotalCharges", "SeniorCitizen"]
@@ -104,3 +104,19 @@ def home():
             st.warning("🟡 Medium Risk Customer — Monitor closely")
         else:
             st.success("🟢 Low Risk Customer — Likely to stay")
+
+        st.subheader("Why this customer may churn")
+
+        rf = model.named_steps["classifier"]
+        pre = model.named_steps["preprocessor"]
+
+        feature_names = pre.get_feature_names_out()
+        importances = rf.feature_importances_
+
+        imp_df = pd.DataFrame({
+            "Feature": feature_names,
+            "Importance": importances
+        }).sort_values(by="Importance", ascending=False).head(5)
+
+        for f in imp_df["Feature"]:
+            st.write("•", f)
