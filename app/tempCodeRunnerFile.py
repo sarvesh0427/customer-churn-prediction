@@ -1,3 +1,2 @@
-    st.table({
-        "Model": ["Logistic Regression", "Random Forest"],
-        "ROC-AUC": [0.8621, 0.8638]
+rf = model.named_steps["classifier"]
+        pre = model.named_steps["preprocessor"]
