@@ -1,69 +1,40 @@
-from fastapi import FastAPI, Form, Request
+import os
+from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-import joblib
-import pandas as pd
+import pickle
 
 app = FastAPI()
 
-# templates + static
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# load model
-model = joblib.load("../models/churn_model.pkl")
+app.mount(
+    "/static",
+    StaticFiles(directory=os.path.join(BASE_DIR, "frontend", "app", "static")),
+    name="static"
+)
 
+templates = Jinja2Templates(
+    directory=os.path.join(BASE_DIR, "frontend", "app", "templates")
+)
 
-@app.get("/")
+model = pickle.load(open(os.path.join(BASE_DIR, "models", "churn_model.pkl"), "rb"))
+
+@app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-
-@app.post("/predict")
+@app.post("/predict", response_class=HTMLResponse)
 def predict(
     request: Request,
-    tenure: float = Form(...),
-    MonthlyCharges: float = Form(...),
-    TotalCharges: float = Form(...)
+    tenure: int = Form(...),
+    monthly_charges: float = Form(...)
 ):
-    # minimal example (you can add all features later)
-    data = {
-        "tenure": tenure,
-        "MonthlyCharges": MonthlyCharges,
-        "TotalCharges": TotalCharges,
-        "gender": "Male",
-        "SeniorCitizen": 0,
-        "Partner": "Yes",
-        "Dependents": "No",
-        "PhoneService": "Yes",
-        "MultipleLines": "No",
-        "InternetService": "Fiber optic",
-        "OnlineSecurity": "No",
-        "OnlineBackup": "Yes",
-        "DeviceProtection": "No",
-        "TechSupport": "No",
-        "StreamingTV": "Yes",
-        "StreamingMovies": "Yes",
-        "Contract": "Month-to-month",
-        "PaperlessBilling": "Yes",
-        "PaymentMethod": "Electronic check"
-    }
-
-    df = pd.DataFrame([data])
-    prob = model.predict_proba(df)[0][1]
-
-    if prob > 0.7:
-        risk = "High Risk"
-    elif prob > 0.4:
-        risk = "Medium Risk"
-    else:
-        risk = "Low Risk"
+    prediction = model.predict([[tenure, monthly_charges]])
+    result = "Customer Will Churn ❌" if prediction[0] == 1 else "Customer Will Stay ✅"
 
     return templates.TemplateResponse(
         "result.html",
-        {
-            "request": request,
-            "prob": round(prob * 100, 2),
-            "risk": risk
-        }
+        {"request": request, "result": result}
     )
