@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-import pickle
+import joblib
 
 app = FastAPI()
 
@@ -19,11 +19,15 @@ templates = Jinja2Templates(
     directory=os.path.join(BASE_DIR, "frontend", "app", "templates")
 )
 
-model = pickle.load(open(os.path.join(BASE_DIR, "models", "churn_model.pkl"), "rb"))
+model = joblib.load(
+    os.path.join(BASE_DIR, "models", "churn_model.pkl")
+)
 
-@app.get("/", response_class=HTMLResponse)
-def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+import pandas as pd
+
+feature_names = joblib.load(
+    os.path.join(BASE_DIR, "models", "feature_names.pkl")
+)
 
 @app.post("/predict", response_class=HTMLResponse)
 def predict(
@@ -31,7 +35,16 @@ def predict(
     tenure: int = Form(...),
     monthly_charges: float = Form(...)
 ):
-    prediction = model.predict([[tenure, monthly_charges]])
+    input_data = {
+        "tenure": tenure,
+        "MonthlyCharges": monthly_charges,
+        # add all other features with default values for now
+    }
+
+    df = pd.DataFrame([input_data])
+    df = df.reindex(columns=feature_names)
+
+    prediction = model.predict(df)
     result = "Customer Will Churn ❌" if prediction[0] == 1 else "Customer Will Stay ✅"
 
     return templates.TemplateResponse(
