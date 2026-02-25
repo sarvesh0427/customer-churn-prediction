@@ -6,12 +6,25 @@
 </head>
 <body>
 
-<h1>Prediction Result</h1>
+<div class="card">
 
-<h2>Churn Probability: {{ prob }}%</h2>
-<h2>Risk Level: {{ risk }}</h2>
+    <h1>Prediction Result</h1>
 
-<a href="/">Try Again</a>
+    <div class="result-box">
+
+        <p class="prob">
+            Churn Probability: {{ probability }}%
+        </p>
+
+        <p class="risk {{ risk_class }}">
+            {{ risk }}
+        </p>
+
+    </div>
+
+    <a href="/" class="btn">Try Again</a>
+
+</div>
 
 </body>
 </html>
