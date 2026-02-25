@@ -29,25 +29,75 @@ feature_names = joblib.load(
     os.path.join(BASE_DIR, "models", "feature_names.pkl")
 )
 
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request}
+    )
+
 @app.post("/predict", response_class=HTMLResponse)
 def predict(
     request: Request,
     tenure: int = Form(...),
     monthly_charges: float = Form(...)
 ):
+
     input_data = {
+        "SeniorCitizen": 0,
         "tenure": tenure,
         "MonthlyCharges": monthly_charges,
-        # add all other features with default values for now
+        "TotalCharges": tenure * monthly_charges,
+
+        "gender": "Male",
+        "Partner": "No",
+        "Dependents": "No",
+        "PhoneService": "Yes",
+        "MultipleLines": "No",
+        "InternetService": "DSL",
+        "OnlineSecurity": "No",
+        "OnlineBackup": "No",
+        "DeviceProtection": "No",
+        "TechSupport": "No",
+        "StreamingTV": "No",
+        "StreamingMovies": "No",
+        "Contract": "Month-to-month",
+        "PaperlessBilling": "Yes",
+        "PaymentMethod": "Electronic check",
     }
 
+    import pandas as pd
     df = pd.DataFrame([input_data])
-    df = df.reindex(columns=feature_names)
 
-    prediction = model.predict(df)
-    result = "Customer Will Churn ❌" if prediction[0] == 1 else "Customer Will Stay ✅"
+    prediction = model.predict(df)[0]
+    probability = model.predict_proba(df)[0][1] * 100
+
+    if probability < 30:
+        risk = "Low Risk "
+        risk_class = "low"
+    elif probability < 60:
+        risk = "Medium Risk ⚠"
+        risk_class = "medium"
+    else:
+        risk = "High Risk "
+        risk_class = "high"
+
+    return templates.TemplateResponse(
+    "result.html",
+    {
+        "request": request,
+        "probability": probability,
+        "risk": risk,
+        "risk_class": risk_class
+    }
+)
 
     return templates.TemplateResponse(
         "result.html",
-        {"request": request, "result": result}
+        {
+            "request": request,
+            "prediction": prediction,
+            "probability": round(probability, 2),
+            "risk": risk
+        }
     )
