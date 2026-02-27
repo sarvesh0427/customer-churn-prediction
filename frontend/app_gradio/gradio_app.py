@@ -1,53 +1,54 @@
-import gradio as gr
+import os
 import joblib
 import pandas as pd
-import os
+import gradio as gr
 
-# go to project root
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# load model
-model = joblib.load(
-    os.path.join(BASE_DIR, "models", "churn_model.pkl")
-)
+model_path = os.path.join(base_dir, "models", "churn_model.pkl")
+feature_path = os.path.join(base_dir, "models", "feature_names.pkl")
+default_path = os.path.join(base_dir, "models", 'default_values.pkl')
 
-feature_names = joblib.load(
-    os.path.join(BASE_DIR, "models", "feature_names.pkl")
-)
 
+model = joblib.load(model_path)
+feature_names = joblib.load(feature_path)
+default_values = joblib.load(default_path)
 
 def predict_churn(tenure, monthly_charges):
 
-    input_data = {
-        "tenure": tenure,
-        "MonthlyCharges": monthly_charges,
-    }
+    # start from safe default row
+    input_data = default_values.copy()
+
+    # override user inputs
+    input_data["tenure"] = tenure
+    input_data["MonthlyCharges"] = monthly_charges
 
     df = pd.DataFrame([input_data])
-
-    df = df.reindex(columns=feature_names, fill_value=0)
+    df = df.reindex(columns=feature_names)
 
     prob = model.predict_proba(df)[0][1]
 
-    if prob > 0.7:
-        risk = "High Risk ❌"
-    elif prob > 0.4:
-        risk = "Medium Risk ⚠"
-    else:
-        risk = "Low Risk ✅"
+    risk = " High Risk" if prob > 0.5 else " Low Risk"
 
-    return f"Churn Probability: {prob*100:.2f}% | {risk}"
+    return f"{prob:.2%}", risk
 
 
-app = gr.Interface(
+interface = gr.Interface(
+
     fn=predict_churn,
     inputs=[
-        gr.Number(label="Tenure (months)"),
-        gr.Number(label="Monthly Charges"),
+        gr.Number(label="Tenure (months)", value=12),
+        gr.Number(label="Monthly Charges ($)", value=70),],
+
+    outputs=[
+        gr.Text(label="Churn Probability"),
+        gr.Text(label="Risk Level"),
     ],
-    outputs="text",
+
     title="Customer Churn Prediction",
-    description="ML model using Scikit-learn Pipeline"
+
+    description="Enter customer details to predict churn risk.",
 )
 
-app.launch()
+if __name__ == "__main__":
+    interface.launch()
