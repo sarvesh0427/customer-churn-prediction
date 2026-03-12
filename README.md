@@ -21,4 +21,21 @@ This project focuses on predicting customer churn using machine learning techniq
 
 ---
 
-**Status**: In progress
+## System Architecture
+
+Dataset  
+↓  
+Data Preprocessing  
+↓  
+Feature Engineering  
+↓  
+Model Training  
+↓  
+Saved Model (.pkl)  
+↓  
+FastAPI Backend  
+↓  
+Frontend (Streamlit / Gradio / HTML)  
+↓  
+Prediction Output
+
