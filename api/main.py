@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from src.models.predict import load_model, predict
 import joblib
 
 app = FastAPI()
@@ -70,6 +71,8 @@ def predict(
     df = pd.DataFrame([input_data])
 
     prediction = model.predict(df)[0]
+    prediction = predict(model, data)
+    return {"prediction": prediction.tolist()}
     probability = model.predict_proba(df)[0][1] * 100
 
     if probability < 30:
@@ -101,3 +104,13 @@ def predict(
             "risk": risk
         }
     )
+
+# example 
+# model = load_model("models/churn_model.pkl")
+
+# @app.post("/predict")
+# def predict_churn(data: InputData):
+
+#     prediction = predict(model, data)
+
+#     return {"prediction": prediction.tolist()}
