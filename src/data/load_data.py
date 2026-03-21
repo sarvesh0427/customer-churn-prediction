@@ -9,7 +9,7 @@ def load_data(filepath: str) -> pd.DataFrame:
         raise FileNotFoundError(f"Dataset not found at: {filepath}")
 
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(path, encoding="utf-8")
         print(f"Dataset loaded successfully from {filepath}")
         print(f"Shape: {df.shape}")
         return df
