@@ -4,12 +4,19 @@ from src.features.build_features import create_features, split_features_target
 from src.models.train_model import train_model
 from src.models.evaluate import evaluate_model
 from src.utils.helpers import save_object
+from src.features.preprocessor import build_preprocessor
 
 DATA_PATH = "data/clean_data.csv"
 MODEL_PATH = "models/churn_model.pkl"
 FEATURE_PATH = "models/feature_columns.pkl"
 
+X = df.drop("Churn", axis=1)
+y = df["Churn"]
 
+numerical_features = X.select_dtypes(include=["int64", "float64"]).columns
+categorical_features = X.select_dtypes(include=["object"]).columns
+
+preprocessor = build_preprocessor(numerical_features, categorical_features)
 def run_training():
     print("Starting training pipeline...")
 
