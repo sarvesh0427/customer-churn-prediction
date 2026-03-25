@@ -18,14 +18,12 @@ def save_object(obj: Any, filepath: str) -> None:
 
 def load_object(filepath: str) -> Any:
     path = Path(filepath)
-
     if not path.exists():
-        raise FileNotFoundError(f"File not found at: {filepath}")
-
+        raise FileNotFoundError(f"Error... File not found at: {filepath}")
     try:
         obj = joblib.load(path)
-        print(f"Object loaded successfully from {filepath}")
+        print(f"Object loaded from: {filepath}")
         return obj
 
     except Exception as e:
-        raise RuntimeError(f"Error loading object: {e}")
+        raise RuntimeError(f"Error!!! Failed to load object: {e}")
