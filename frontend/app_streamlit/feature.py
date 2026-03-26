@@ -3,9 +3,7 @@ import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Load model
-model = joblib.load("models/churn_model.pkl")
-feature_names = joblib.load("models/feature_names.pkl")
+model = joblib.load("models/final_pipeline.pkl") 
 
 def feature():
     st.title("Feature Importance")
