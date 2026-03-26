@@ -1,10 +1,7 @@
 import streamlit as st
 import pandas as pd
-import joblib
+import requests
 
-# Load model
-model = joblib.load("models/churn_model.pkl")
-feature_names = joblib.load("models/feature_names.pkl")
 
 def home():
     st.title("Customer Churn Prediction")
@@ -72,51 +69,35 @@ def home():
 
     input_df = pd.DataFrame([input_dict])
 
-    # Add missing columns safely
-    # for col in feature_names:
-    #     if col not in input_df.columns:
-    #         input_df[col] = None
-
-    # # Correct order
-    # input_df = input_df[feature_names]
-
-    # Fix numeric types
-    num_cols = ["tenure", "MonthlyCharges", "TotalCharges", "SeniorCitizen"]
-    for c in num_cols:
-        if c in input_df.columns:
-            input_df[c] = pd.to_numeric(input_df[c], errors="coerce")
-
 
     # prediction
+    API_URL = "http://127.0.0.1:8000/predict"
 
     if st.button("Predict Churn Risk"):
 
-        prob = model.predict_proba(input_df)[0][1]
-        pred = model.predict(input_df)[0]
+        try:
+            response = requests.post(API_URL, json=input_dict)
 
-        st.subheader("Prediction Result")
+            if response.status_code == 200:
+                result = response.json()
+                # st.write(response.json())
 
-        st.metric("Churn Probability", f"{prob:.2%}")
+                pred = result["churn_prediction"]
+                prob = result["churn_probability"]
 
-        if prob > 0.7:
-            st.error("🔴 High Risk Customer — Immediate retention action recommended")
-        elif prob > 0.4:
-            st.warning("🟡 Medium Risk Customer — Monitor closely")
-        else:
-            st.success("🟢 Low Risk Customer — Likely to stay")
+                st.subheader("Prediction Result")
+                st.metric("Churn Probability", f"{prob:.2%}")
 
-        st.subheader("Why this customer may churn")
+                if prob > 0.7:
+                    st.error("High Risk Customer — Immediate retention action recommended")
+                elif prob > 0.4:
+                    st.warning("Medium Risk Customer — Monitor closely")
+                else:
+                    st.success("Low Risk Customer — Likely to stay")
 
-        rf = model.named_steps["classifier"]
-        pre = model.named_steps["preprocessor"]
+            else:
+                st.error(f"API Error: {response.text}")
 
-        feature_names = pre.get_feature_names_out()
-        importances = rf.feature_importances_
+        except Exception as e:
+            st.error(f"Connection Error: {e}")
 
-        imp_df = pd.DataFrame({
-            "Feature": feature_names,
-            "Importance": importances
-        }).sort_values(by="Importance", ascending=False).head(5)
-
-        for f in imp_df["Feature"]:
-            st.write("•", f)
