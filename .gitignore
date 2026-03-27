@@ -9,6 +9,7 @@ __pycache__/
 
 # Models
 *.pkl
+!models/final_pipeline.pkl
 
 # Environment
 .env
