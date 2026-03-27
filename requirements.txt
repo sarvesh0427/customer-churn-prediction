@@ -1,1 +1,8 @@
-fastapiuvicornstreamlitpandasscikit-learnjoblibrequestsmatplotlib
+fastapi
+uvicorn
+streamlit
+pandas
+scikit-learn
+joblib
+requests
+matplotlib
