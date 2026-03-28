@@ -71,7 +71,7 @@ def home():
 
 
     # prediction
-    API_URL = "http://127.0.0.1:8000/predict"
+    API_URL = "https://customer-churn-prediction-ccbq.onrender.com"
 
     if st.button("Predict Churn Risk"):
 
