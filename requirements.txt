@@ -3,7 +3,7 @@ fastapi
 uvicorn
 streamlit
 pandas
-scikit-learn
+scikit-learn==1.5.1
 joblib
 requests
 matplotlib
