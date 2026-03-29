@@ -1,7 +1,7 @@
 import streamlit as st
 import home
 import about
-import feature
+# import feature
 
 
 st.set_page_config(
