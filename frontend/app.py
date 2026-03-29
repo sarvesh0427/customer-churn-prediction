@@ -11,7 +11,7 @@ st.set_page_config(
 )
 # Sidebar navigation
 st.sidebar.title("Navigation")
-section = st.sidebar.radio("Go to", ["Home","Feature Importance Chart","About"])
+section = st.sidebar.radio("Go to", ["Home","About"])
 st.sidebar.markdown("---")
 
 
@@ -21,8 +21,8 @@ if section == 'Home':
 elif section == "About":
     about.about()
 
-elif section == 'Feature Importance Chart':
-    feature.feature()
+# elif section == 'Feature Importance Chart':
+#     feature.feature()
 
 
 # ----- FIXED FOOTER -----
