@@ -1,5 +1,7 @@
 # customer-churn-prediction
 Customer Churn Prediction &amp; Retention Strategy System
+
+Streamlit link: https://customer-churn-prediction-ccp.streamlit.app/
 ## Overview
 This project focuses on predicting customer churn using machine learning techniques and deploying the solution as an interactive web application using Streamlit. The goal is to help businesses identify customers who are likely to leave and take proactive retention actions.
 
