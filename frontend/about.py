@@ -6,28 +6,28 @@ def about():
     st.title("About This Project")
 
     st.markdown("""
-    ### Customer Churn Prediction System
+    ### 🚀 Customer Churn Prediction System
 
-    This project is an end-to-end Machine Learning application that predicts whether a telecom customer is likely to **churn (leave the service)** or stay with the company.
+    This is a **production-ready end-to-end Machine Learning system** that predicts whether a telecom customer is likely to **churn** or stay.
 
-    The goal of this project is to help businesses identify **high-risk customers early** so they can take proactive retention actions and reduce revenue loss.
-
-    ---
-
-    ### Objectives
-
-    - Predict customer churn using Machine Learning
-    - Identify key factors influencing churn
-    - Provide churn probability and risk level
-    - Build a real-world deployable ML application
-    - Demonstrate full ML lifecycle (data → model → deployment)
+    It is designed to help businesses **identify high-risk customers early** and take proactive retention actions.
 
     ---
 
-    ### Machine Learning Pipeline
+    ### 🎯 Objectives
+
+    - Predict customer churn using ML models  
+    - Identify key churn-driving factors  
+    - Provide probability-based risk scoring  
+    - Build a real-world deployable ML system  
+    - Demonstrate full ML lifecycle (data → model → API → frontend)
+
+    ---
+
+    ### ⚙️ Machine Learning Pipeline
 
     - Data Cleaning & Preprocessing  
-    - Feature Engineering  
+    - Feature Engineering (including tenure groups)  
     - Handling Class Imbalance  
     - Model Training (Logistic Regression, Random Forest)  
     - Hyperparameter Tuning (GridSearchCV)  
@@ -37,60 +37,87 @@ def about():
 
     ---
 
-    ### Final Model
+    ### 🧠 Final Model
 
-    - Algorithm: **Random Forest Classifier**
-    - Tuned using Cross Validation
-    - Final ROC-AUC: **0.86+**
-    - Handles class imbalance
-    - Production-ready pipeline
+    - **Algorithm:** Random Forest Classifier  
+    - **ROC-AUC Score:** ~0.86  
+    - Tuned using cross-validation  
+    - Handles class imbalance effectively  
+    - Integrated into production pipeline  
 
     ---
     """)
-    st.subheader("Model Comparison")
+
+    st.subheader("📊 Model Comparison")
 
     st.table({
         "Model": ["Logistic Regression", "Random Forest"],
         "ROC-AUC": [0.8621, 0.8638]
-})
-
+    })
 
     st.markdown("""
     ---
-    
-    ### Deployment
 
-    - Built with **Streamlit**
-    - Real-time churn prediction
-    - Probability-based risk scoring (Low / Medium / High)
-    - Interactive Feature Importance visualization
+    ### 🌐 Deployment Architecture
 
-    ---
-
-    ### Business Impact
-
-    This system can help companies:
-
-    - Detect customers likely to churn
-    - Understand why customers leave
-    - Improve retention strategies
-    - Reduce customer acquisition cost
-    - Increase long-term revenue
+    - **Frontend:** Streamlit  
+    - **Backend:** FastAPI (REST API)  
+    - **Model Serving:** Deployed ML pipeline  
+    - **Integration:** API-based communication (HTTP requests)  
 
     ---
 
-    ### Tech Stack
+    ### 🔗 Live Links
 
-    - Python
-    - Scikit-learn
-    - Pandas / NumPy
-    - Matplotlib
-    - Streamlit
-    - Joblib
+    - 🌍 **Frontend App:** _[https://customer-churn-prediction-ccp.streamlit.app/]_
+    - ⚡ **API Endpoint:** _[https://customer-churn-prediction-ccbq.onrender.com]_  
+    - 💻 **GitHub Repo:** _[https://github.com/sarvesh0427/customer-churn-prediction]_  
 
     ---
 
-    ### Author
+    ### 🧪 How to Use
 
-    Developed as a full Machine Learning project for learning, portfolio, and real-world deployment practice.
+    1. Enter customer details in the input form  
+    2. Click **Predict Churn Risk**  
+    3. System sends request to deployed API  
+    4. API returns prediction & probability  
+    5. View risk level: Low / Medium / High  
+
+    ---
+
+    ### 💼 Business Impact
+
+    - Detect high-risk customers early  
+    - Improve retention strategies  
+    - Reduce churn rate  
+    - Increase customer lifetime value  
+    - Support data-driven decision making  
+
+    ---
+
+    ### 🛠 Tech Stack
+
+    - Python  
+    - Scikit-learn  
+    - Pandas / NumPy  
+    - Matplotlib  
+    - FastAPI  
+    - Streamlit  
+    - Joblib  
+
+    ---
+
+    ### 📌 Key Highlights
+
+    - Full-stack ML system (Frontend + Backend + Model)  
+    - REST API deployment (industry practice)  
+    - Real-time prediction system  
+    - Clean modular architecture  
+    - End-to-end ML lifecycle implemented  
+
+    ---
+
+    ### 👨‍💻 Author
+
+    Developed as a **portfolio-level Machine Learning project** demonstrating real-world deployment, API integration, and ML engineering skills.
     """)
